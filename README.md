@@ -10,9 +10,9 @@ In each case, we train and render a MLP with multiresolution hash input encoding
 > __Instant Neural Graphics Primitives with a Multiresolution Hash Encoding__  
 > [Thomas Müller](https://tom94.net), [Alex Evans](https://research.nvidia.com/person/alex-evans), [Christoph Schied](https://research.nvidia.com/person/christoph-schied), [Alexander Keller](https://research.nvidia.com/person/alex-keller)  
 > _ACM Transactions on Graphics (__SIGGRAPH__), July 2022_  
-> __[Project page](https://nvlabs.github.io/instant-ngp)&nbsp;/ [Paper](https://nvlabs.github.io/instant-ngp/assets/mueller2022instant.pdf)&nbsp;/ [Video](https://nvlabs.github.io/instant-ngp/assets/mueller2022instant.mp4)&nbsp;/ [Presentation](https://tom94.net/data/publications/mueller22instant/mueller22instant-gtc.mp4)&nbsp;/ [BibTeX](https://nvlabs.github.io/instant-ngp/assets/mueller2022instant.bib)__
+> __[Project page](https://nvlabs.github.io/instant-ngp)&nbsp;/ [Paper](https://nvlabs.github.io/instant-ngp/assets/mueller2022instant.pdf)&nbsp;/ [Video](https://nvlabs.github.io/instant-ngp/assets/mueller2022instant.mp4)&nbsp;/ [Presentation](https://tom94.net/data/publications/mueller22instant/mueller22instant-gtc.mp4)&nbsp;/ [Real-Time Live](https://tom94.net/data/publications/mueller22instant/mueller22instant-rtl.mp4)&nbsp;/ [BibTeX](https://nvlabs.github.io/instant-ngp/assets/mueller2022instant.bib)__
 
-To get started with NVIDIA Instant NeRF, check out the [blog post](https://developer.nvidia.com/blog/getting-started-with-nvidia-instant-nerfs/) and [SIGGRAPH tutorial](https://www.nvidia.com/en-us/on-demand/session/siggraph2022-sigg22-s-16/)
+To get started with NVIDIA Instant NeRF, check out the [blog post](https://developer.nvidia.com/blog/getting-started-with-nvidia-instant-nerfs/) and [SIGGRAPH tutorial](https://www.nvidia.com/en-us/on-demand/session/siggraph2022-sigg22-s-16/).
 
 For business inquiries, please submit the [NVIDIA research licensing form](https://www.nvidia.com/en-us/research/inquiries/).
 
@@ -21,11 +21,14 @@ For business inquiries, please submit the [NVIDIA research licensing form](https
 
 - An __NVIDIA GPU__; tensor cores increase performance when available. All shown results come from an RTX 3090.
 - A __C++14__ capable compiler. The following choices are recommended and have been tested:
-  - __Windows:__ Visual Studio 2019
-  - __Linux:__ GCC/G++ 7.5 or higher
-- __[CUDA](https://developer.nvidia.com/cuda-toolkit) v10.2 or higher__ and __[CMake](https://cmake.org/) v3.21 or higher__.
+  - __Windows:__ Visual Studio 2019 or 2022
+  - __Linux:__ GCC/G++ 8 or higher
+- A recent version of __[CUDA](https://developer.nvidia.com/cuda-toolkit)__. The following choices are recommended and have been tested:
+  - __Windows:__ CUDA 11.5 or higher
+  - __Linux:__ CUDA 10.2 or higher
+- __[CMake](https://cmake.org/) v3.21 or higher__.
 - __(optional) [Python](https://www.python.org/) 3.7 or higher__ for interactive bindings. Also, run `pip install -r requirements.txt`.
-- __(optional) [OptiX](https://developer.nvidia.com/optix) 7.3 or higher__ for faster mesh SDF training. Set the environment variable `OptiX_INSTALL_DIR` to the installation directory if it is not discovered automatically.
+- __(optional) [OptiX](https://developer.nvidia.com/optix) 7.3 or higher__ for faster mesh SDF training.
 - __(optional) [Vulkan SDK](https://vulkan.lunarg.com/)__ for DLSS support.
 
 
@@ -68,9 +71,10 @@ instant-ngp$ cmake . -B build
 instant-ngp$ cmake --build build --config RelWithDebInfo -j
 ```
 
-If the build fails, please consult [this list of possible fixes](https://github.com/NVlabs/instant-ngp#troubleshooting-compile-errors) before opening an issue.
+If compilation fails inexplicably or takes longer than an hour, you might be running out of memory. Try running the above command without `-j` in that case.
+If this does not help, please consult [this list of possible fixes](https://github.com/NVlabs/instant-ngp#troubleshooting-compile-errors) before opening an issue.
 
-If the build succeeds, you can now run the code via the `build/testbed` executable or the `scripts/run.py` script described below.
+If the build succeeds, you can now run the code via the `build/instant-ngp` executable or the `scripts/run.py` script described below.
 
 If automatic GPU architecture detection fails, (as can happen if you have multiple GPUs installed), set the `TCNN_CUDA_ARCHITECTURES` environment variable for the GPU you would like to use. The following table lists the values for common GPUs. If your GPU is not listed, consult [this exhaustive list](https://developer.nvidia.com/cuda-gpus).
 
@@ -84,7 +88,7 @@ If automatic GPU architecture detection fails, (as can happen if you have multip
 
 <img src="docs/assets_readme/testbed.png" width="100%"/>
 
-This codebase comes with an interactive testbed that includes many features beyond our academic publication:
+This codebase comes with an interactive GUI that includes many features beyond our academic publication:
 - Additional training features, such as extrinsics and intrinsics optimization.
 - Marching cubes for `NeRF->Mesh` and `SDF->Mesh` conversion.
 - A spline-based camera path editor to create videos.
@@ -92,20 +96,20 @@ This codebase comes with an interactive testbed that includes many features beyo
 - And many more task-specific settings.
 - See also our [one minute demonstration video of the tool](https://nvlabs.github.io/instant-ngp/assets/mueller2022instant.mp4).
 
-Let's start using the testbed; more information about the GUI and other scripts follow these test scenes.
+Let's start using __instant-ngp__; more information about the GUI and other scripts follow these test scenes.
 
 ### NeRF fox
 
 One test scene is provided in this repository, using a small number of frames from a casually captured phone video:
 
 ```sh
-instant-ngp$ ./build/testbed --scene data/nerf/fox
+instant-ngp$ ./build/instant-ngp --scene data/nerf/fox
 ```
 
 On Windows you need to reverse the slashes here (and below), i.e.:
 
 ```sh
-instant-ngp> .\build\testbed --scene data\nerf\fox
+instant-ngp> .\build\instant-ngp --scene data\nerf\fox
 ```
 
 <img src="docs/assets_readme/fox.png"/>
@@ -114,7 +118,7 @@ Alternatively, download any NeRF-compatible scene (e.g. from the [NeRF authors' 
 Now you can run:
 
 ```sh
-instant-ngp$ ./build/testbed --scene data/nerf_synthetic/lego/transforms_train.json
+instant-ngp$ ./build/instant-ngp --scene data/nerf_synthetic/lego/transforms_train.json
 ```
 
 **[To prepare your own dataset for use with our NeRF implementation, click here.](docs/nerf_dataset_tips.md)** See also [this video](https://www.youtube.com/watch?v=8GbENSmdVeE) for a guided walkthrough.
@@ -122,7 +126,7 @@ instant-ngp$ ./build/testbed --scene data/nerf_synthetic/lego/transforms_train.j
 ### SDF armadillo
 
 ```sh
-instant-ngp$ ./build/testbed --scene data/sdf/armadillo.obj
+instant-ngp$ ./build/instant-ngp --scene data/sdf/armadillo.obj
 ```
 
 <img src="docs/assets_readme/armadillo.png"/>
@@ -130,7 +134,7 @@ instant-ngp$ ./build/testbed --scene data/sdf/armadillo.obj
 ### Image of Einstein
 
 ```sh
-instant-ngp$ ./build/testbed --scene data/image/albert.exr
+instant-ngp$ ./build/instant-ngp --scene data/image/albert.exr
 ```
 
 <img src="docs/assets_readme/albert.png"/>
@@ -138,7 +142,7 @@ instant-ngp$ ./build/testbed --scene data/image/albert.exr
 To reproduce the gigapixel results, download, for example, [the Tokyo image](https://www.flickr.com/photos/trevor_dobson_inefekt69/29314390837) and convert it to `.bin` using the `scripts/convert_image.py` script. This custom format improves compatibility and loading speed when resolution is high. Now you can run:
 
 ```sh
-instant-ngp$ ./build/testbed --scene data/image/tokyo.bin
+instant-ngp$ ./build/instant-ngp --scene data/image/tokyo.bin
 ```
 
 
@@ -147,14 +151,14 @@ instant-ngp$ ./build/testbed --scene data/image/tokyo.bin
 Download the [nanovdb volume for the Disney cloud](https://drive.google.com/drive/folders/1SuycSAOSG64k2KLV7oWgyNWyCvZAkafK?usp=sharing), which is derived [from here](https://disneyanimation.com/data-sets/?drawer=/resources/clouds/) ([CC BY-SA 3.0](https://media.disneyanimation.com/uploads/production/data_set_asset/6/asset/License_Cloud.pdf)).
 
 ```sh
-instant-ngp$ ./build/testbed --mode volume --scene data/volume/wdas_cloud_quarter.nvdb
+instant-ngp$ ./build/instant-ngp --mode volume --scene data/volume/wdas_cloud_quarter.nvdb
 ```
 <img src="docs/assets_readme/cloud.png"/>
 
 
-### Testbed controls
+### GUI controls
 
-Here are the main keyboard controls for the testbed application.
+Here are the main keyboard controls for the __instant-ngp__ application.
 
 | Key             | Meaning       |
 | :-------------: | ------------- |
@@ -171,7 +175,7 @@ Here are the main keyboard controls for the testbed application.
 | , / .           | Shows the previous / next visualized layer; hit M to escape. |
 | 1-8             | Switches among various render modes, with 2 being the standard one. You can see the list of render mode names in the control interface. |
 
-There are many controls in the __instant-ngp__ GUI when the testbed program is run.
+There are many controls in the __instant-ngp__ GUI.
 First, note that this GUI can be moved and resized, as can the "Camera path" GUI (which first must be expanded to be used).
 
 Some popular user controls in __instant-ngp__ are:
@@ -185,10 +189,10 @@ The "Camera path" GUI lets you set frames along a path. "Add from cam" is the ma
 
 ## Python bindings
 
-To conduct controlled experiments in an automated fashion, all features from the interactive testbed (and more!) have Python bindings that can be easily instrumented.
-For an example of how the `./build/testbed` application can be implemented and extended from within Python, see `./scripts/run.py`, which supports a superset of the command line arguments that `./build/testbed` does.
+To conduct controlled experiments in an automated fashion, all features from the interactive GUI (and more!) have Python bindings that can be easily instrumented.
+For an example of how the `./build/instant-ngp` application can be implemented and extended from within Python, see `./scripts/run.py`, which supports a superset of the command line arguments that `./build/instant-ngp` does.
 
-Here is a typical command line using `scripts/run.py` to generate a 5-second flythrough of the fox dataset to the (default) file `video.mp4`, after using the testbed to save a (default) NeRF snapshot `base.msgpack` and a set of camera key frames: (see [this video](https://www.youtube.com/watch?v=8GbENSmdVeE) for a guided walkthrough)
+Here is a typical command line using `scripts/run.py` to generate a 5-second flythrough of the fox dataset to the (default) file `video.mp4`, after using the GUI to save a (default) NeRF snapshot `base.msgpack` and a set of camera key frames: (see [this video](https://www.youtube.com/watch?v=8GbENSmdVeE) for a guided walkthrough)
 
 ```sh
 instant-ngp$ python scripts/run.py --mode nerf --scene data/nerf/fox --load_snapshot data/nerf/fox/base.msgpack --video_camera_path data/nerf/fox/base_cam.json --video_n_seconds 5 --video_fps 60 --width 1920 --height 1080
@@ -203,7 +207,7 @@ Happy hacking!
 
 __Q:__ How can I run __instant-ngp__ in headless mode?
 
-__A:__ Use `./build/testbed --no-gui` or `python scripts/run.py`. You can also compile without GUI via `cmake -DNGP_BUILD_WITH_GUI=off ...`
+__A:__ Use `./build/instant-ngp --no-gui` or `python scripts/run.py`. You can also compile without GUI via `cmake -DNGP_BUILD_WITH_GUI=off ...`
 
 ##
 __Q:__ Does this codebase run on [Google Colab](https://colab.research.google.com/)?

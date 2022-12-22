@@ -50,11 +50,13 @@ You can set any of the following parameters, where the listed values are the def
 See [nerf_loader.cu](src/nerf_loader.cu) for implementation details and additional options.
 
 ## Preparing new NeRF datasets
+
 To train on self-captured data, one has to process the data into an existing format supported by Instant-NGP. We provide scripts to support two complementary approaches:
 - [COLMAP](#COLMAP)
 - [Record3D](#Record3D) (based on ARKit)
 
 ### COLMAP
+
 Make sure that you have installed [COLMAP](https://colmap.github.io/) and that it is available in your PATH. If you are using a video file as input, also be sure to install [FFmpeg](https://www.ffmpeg.org/) and make sure that it is available in your PATH.
 To check that this is the case, from a terminal window, you should be able to run `colmap` and `ffmpeg -?` and see some help text from each.
 
@@ -82,10 +84,11 @@ The `aabb_scale` parameter is the most important `instant-ngp` specific paramete
 Assuming success, you can now train your NeRF model as follows, starting in the `instant-ngp` folder:
 
 ```sh
-instant-ngp$ ./build/testbed --mode nerf --scene [path to training data folder containing transforms.json]
+instant-ngp$ ./build/instant-ngp --mode nerf --scene [path to training data folder containing transforms.json]
 ```
 
 ### Record3D
+
 With an >=iPhone 12 Pro, one can use [Record3D](https://record3d.app/) to collect data and avoid COLMAP. [Record3D](https://record3d.app/) is an iOS app that relies on ARKit to estimate each image's camera pose. It is more robust than COLMAP for scenes that lack textures or contain repetitive patterns. To train Instant-NGPs with Record3D data, follow these steps: 
 
 1. Record a video and export with the "Shareable/Internal format (.r3d)".
@@ -99,7 +102,7 @@ With an >=iPhone 12 Pro, one can use [Record3D](https://record3d.app/) to collec
 
 5. Launch Instant-NGP training:
 	```
-	./build/testbed --scene path/to/data
+	./build/instant-ngp --scene path/to/data
 	```
 
 ## Tips for NeRF training data
