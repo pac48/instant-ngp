@@ -1,0 +1,1 @@
+/home/paul/instant-ngp/scripts/run.py --zmq_port 5561 --zmq_topic nerf_cup --load_snapshot ../data/nerf/box/cup.msgpack --mode nerf --test_transforms ../data/nerf/box/test_transforms.json

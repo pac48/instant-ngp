@@ -561,7 +561,7 @@ void Testbed::imgui() {
 			ImGui::Checkbox("Random bg color", &m_nerf.training.random_bg_color);
 			ImGui::SameLine();
 			ImGui::Checkbox("Snap to pixel centers", &m_nerf.training.snap_to_pixel_centers);
-			ImGui::SliderFloat("Near distance", &m_nerf.training.near_distance, 0.0f, 1.0f);
+			ImGui::SliderFloat("Near distance", &m_nerf.training.near_distance, 0.0f, 5.0f);
 			accum_reset |= ImGui::Checkbox("Linear colors", &m_nerf.training.linear_colors);
 			ImGui::Combo("Loss", (int*)&m_nerf.training.loss_type, LossTypeStr);
 			ImGui::Combo("Depth Loss", (int*)&m_nerf.training.depth_loss_type, LossTypeStr);
