@@ -2866,6 +2866,9 @@ void Testbed::train_nerf_step(uint32_t target_batch_size, Testbed::NerfCounters&
 	bool prepare_input_gradients = train_camera || train_extra_dims;
 	GPUMatrix<float> coords_gradient_matrix((float*)coords_gradient, floats_per_coord, target_batch_size);
 
+    std::vector<float> tmp(compacted_coords_matrix.n_elements()); //TODO revert
+    cudaMemcpy(tmp.data(), compacted_coords_matrix.data(), tmp.size()*sizeof(float), cudaMemcpyDeviceToHost);  //TODO revert
+
 	m_trainer->training_step(stream, compacted_coords_matrix, {}, nullptr, false, prepare_input_gradients ? &coords_gradient_matrix : nullptr, false, GradientMode::Overwrite, &gradient_matrix);
 
 	if (train_extra_dims) {
@@ -3100,6 +3103,7 @@ GPUMemory<vec4> Testbed::get_rgba_on_grid(ivec3 res3d, vec3 ray_dir, bool voxel_
 
 		// run network
 		GPUMatrix<float> positions_matrix((float*)(positions.data() + offset * floats_per_coord), floats_per_coord, local_batch_size);
+        auto tmp = positions_matrix.to_cpu_vector();
 		GPUMatrix<float> rgbsigma_matrix((float*)(rgba.data() + offset), 4, local_batch_size);
 		m_network->inference(m_stream.get(), positions_matrix, rgbsigma_matrix);
 

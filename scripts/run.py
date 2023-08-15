@@ -22,7 +22,9 @@ from scenes import *
 
 from tqdm import tqdm
 
-import pyngp as ngp # noqa
+import pyngp.pyngp as ngp # noqa
+attributes = dir(ngp)
+print(attributes)
 
 def parse_args():
 	parser = argparse.ArgumentParser(description="Run instant neural graphics primitives with additional configuration & output options")
